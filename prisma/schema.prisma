@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Service {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  prefix    String   @unique // e.g., "V" for Visa, "P" for Passport
+  tickets   Ticket[]
+  createdAt DateTime @default(now())
+}
+
+model Ticket {
+  id              String   @id @default(uuid())
+  tokenNumber     String   // e.g., "V-001"
+  status          Status   @default(WAITING)
+  position        Int      // Global position for FIFO
+  customerName    String?
+  customerDetails String?
+  phoneNumber     String?  // For SMS notifications
+  email           String?  // For Email notifications
+  counterNumber   String?  // The desk/counter serving the ticket
+  serviceId       String
+  service         Service  @relation(fields: [serviceId], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([status, position])
+}
+
+enum Status {
+  WAITING
+  SERVING
+  COMPLETED
+  CANCELLED
+}
+
+model Staff {
+  id        String   @id @default(uuid())
+  name      String
+  role      Role     @default(OFFICER)
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  OFFICER
+  ADMIN
+}
