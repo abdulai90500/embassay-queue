@@ -9,6 +9,7 @@ export default function ServiceManager({ initialServices }: { initialServices: a
   const [name, setName] = useState('');
   const [prefix, setPrefix] = useState('');
   const [loading, setLoading] = useState(false);
+  const [serviceToDelete, setServiceToDelete] = useState<string | null>(null);
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,15 +25,40 @@ export default function ServiceManager({ initialServices }: { initialServices: a
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure? All tickets for this service will be affected.')) return;
     const result = await deleteService(id);
     if (result.success) {
       setServices(services.filter(s => s.id !== id));
     }
+    setServiceToDelete(null);
   };
 
   return (
-    <div className="grid" style={{ gridTemplateColumns: '1fr 350px', gap: '2.5rem', alignItems: 'start' }}>
+    <>
+      {serviceToDelete && (
+        <div className="modal-overlay" style={{
+          position: 'fixed', inset: 0, zIndex: 2000,
+          background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: '1.5rem',
+        }}>
+          <div className="card animate-sweet-scale" style={{ maxWidth: '400px', width: '100%', textAlign: 'center', padding: '2.5rem' }}>
+            <Trash2 size={48} color="var(--danger)" style={{ margin: '0 auto 1.5rem', opacity: 0.8 }} />
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem' }}>Delete Service?</h2>
+            <p style={{ color: 'var(--muted-foreground)', marginBottom: '2rem' }}>
+              Are you sure? All tickets associated with this service will also be permanently deleted.
+            </p>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+              <button onClick={() => setServiceToDelete(null)} className="btn btn-secondary" style={{ flex: 1, padding: '0.75rem' }}>
+                Cancel
+              </button>
+              <button onClick={() => handleDelete(serviceToDelete)} className="btn" style={{ background: 'var(--danger)', color: 'white', flex: 1, padding: '0.75rem' }}>
+                Yes, Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      <div className="grid" style={{ gridTemplateColumns: '1fr 350px', gap: '2.5rem', alignItems: 'start' }}>
       {/* SERVICE LIST */}
       <div className="grid" style={{ gap: '1rem' }}>
         <h2 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '0.5rem' }}>Active Services</h2>
@@ -63,7 +89,7 @@ export default function ServiceManager({ initialServices }: { initialServices: a
               </div>
             </div>
             <button 
-              onClick={() => handleDelete(service.id)}
+              onClick={() => setServiceToDelete(service.id)}
               style={{ color: 'var(--danger)', opacity: 0.6 }}
               className="btn btn-secondary"
             >
@@ -139,5 +165,6 @@ export default function ServiceManager({ initialServices }: { initialServices: a
         </form>
       </aside>
     </div>
+    </>
   );
 }
