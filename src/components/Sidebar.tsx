@@ -13,17 +13,17 @@ import {
   FileText
 } from 'lucide-react';
 
+const NAV_ITEMS = [
+  { name: 'Queue Dashboard', href: '/staff', icon: LayoutDashboard },
+  { name: 'Add Applicant', href: '/staff/add-applicant', icon: Users },
+  { name: 'Applications', href: '/staff/applications', icon: FileText },
+  { name: 'Public Display', href: '/display', icon: Monitor },
+  { name: 'Services', href: '/staff/services', icon: Building2 },
+  { name: 'Analytics', href: '/staff/analytics', icon: LayoutDashboard },
+];
+
 export default function Sidebar() {
   const pathname = usePathname();
-
-  const navItems = [
-    { name: 'Queue Dashboard', href: '/staff', icon: LayoutDashboard },
-    { name: 'Add Applicant', href: '/staff/add-applicant', icon: Users },
-    { name: 'Applications', href: '/staff/applications', icon: FileText },
-    { name: 'Public Display', href: '/display', icon: Monitor },
-    { name: 'Services', href: '/staff/services', icon: Building2 },
-    { name: 'Analytics', href: '/staff/analytics', icon: LayoutDashboard },
-  ];
 
   return (
     <aside className="sidebar animate-sweet-slide">
@@ -45,7 +45,7 @@ export default function Sidebar() {
       </div>
 
       <nav className="sidebar-nav">
-        {navItems.map((item, index) => {
+        {NAV_ITEMS.map((item, index) => {
           const Icon = item.icon;
           const isActive = pathname === item.href;
           return (

@@ -181,7 +181,8 @@ button {
 /* Dashboard Layout */
 .dashboard-container {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .sidebar {
@@ -212,6 +213,22 @@ button {
   flex-direction: column;
   gap: 0.5rem;
   flex: 1;
+  overflow-y: auto;
+}
+
+/* Custom scrollbar for sidebar nav */
+.sidebar-nav::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
 }
 
 .nav-link {
